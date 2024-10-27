@@ -1,0 +1,259 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Welcome to Prime Car's rental {{users.fname}} {{users.lname}}  🎉</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-4 d-flex justify-content-center">
+                                            <img src="{% static 'public/img/car.png' %}" alt="" width="108px">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p>Prime Cars offers top-quality car rental services, providing a wide range of well-maintained, reliable vehicles to suit your travel needs. Whether you're looking for a sleek sedan for business trips, a spacious SUV for family vacations, or a luxury vehicle for special occasions.</p>
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+                        <div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title">Registered Shops</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        {% if registred_shops %}
+                                                {% for shops in registred_shops %} 
+                                                    <div class="col-1">
+                                                        <a href="{% url 'details_shops' slug=shops.slug %}">
+                                                            <img src="{{shops.logo.url}}" alt="" class="img-fluid">
+                                                        </a>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <div class="col-12">
+                                                    <p>No Shop published</p>
+                                                </div>
+                                        {% endif %}
+
+                                    </div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-header mb-0">
+										<h3 class="card-title">My Rented Cars</h3>
+									</div>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table id="mydata" class="display" style="width:100%">
+												<thead>
+													<tr>
+														<th>Shop Name</th>
+														<th>Car Brand</th>
+														<th>Pickup and Return Time</th>
+														<th>Hourly</th>
+														<th>Total Cost</th>
+														<th>Rent Status</th>
+														<th>Details</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for vehicles in rented_cars %}
+														<tr>
+															<td>{{vehicles.unit_rented.shop_belong.shop_name}}</td>
+															<td>{{vehicles.unit_rented.categories}} {{vehicles.unit_rented.model_car}}</td>
+															<td>{{vehicles.pick_up_unit}} / {{vehicles.return_unit}} ({{vehicles.total_hrs}} hrs)</td>
+															<td>₱{{ vehicles.unit_rented.rent_per_hr|floatformat:2|intcomma }}/hr</td>
+															<td>₱{{ vehicles.total_fare|floatformat:2|intcomma }}</td>
+															<td>{{vehicles.status}}</td>
+															<td>
+																<a href="" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cardetail{{vehicles.id}}">Other details</a>
+															</td>
+														</tr>
+													{% endfor %}                             
+												</tbody>
+																				
+											</table>
+										</div>
+									</div>
+									{% for cars in rented_cars %}
+									<div class="modal fade" id="cardetail{{cars.id}}" tabindex="-1" aria-labelledby="cardetailLabel" aria-hidden="true">
+										<div class="modal-dialog modal-xl">
+											<div class="modal-content">
+											  <div class="modal-header">
+												<h1 class="modal-title fs-5" id="cardetailLabel">Rent Details</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											  </div>
+											  <div class="modal-body">
+												<div class="row">
+												  <div class="col-sm-4">
+													  <div id="carouselExample" class="carousel slide">
+														  <div class="carousel-inner">
+															<div class="carousel-item active">
+															  <img src="{{cars.unit_rented.img1.url}}" class="d-block w-100" alt="...">
+															</div>
+															<div class="carousel-item">
+															  <img src="{{cars.unit_rented.img2.url}}" class="d-block w-100" alt="...">
+															</div>
+															<div class="carousel-item">
+															  <img src="{{cars.unit_rented.img3.url}}" class="d-block w-100" alt="...">
+															</div>
+															<div class="carousel-item">
+															  <img src="{{cars.unit_rented.img4.url}}" class="d-block w-100" alt="...">
+															</div>
+															<div class="carousel-item">
+															  <img src="{{cars.unit_rented.img5.url}}" class="d-block w-100" alt="...">
+															</div>
+														  </div>
+														  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+															<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+															<span class="visually-hidden">Previous</span>
+														  </button>
+														  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+															<span class="carousel-control-next-icon" aria-hidden="true"></span>
+															<span class="visually-hidden">Next</span>
+														  </button>
+														</div>
+												  </div>
+												  <div class="col-sm-8">
+													  <div class="table-responsive">
+														  <table class="table">
+															  <thead>
+																<tr>
+																  <th scope="col">Car Specifications</th>
+																  <th scope="col"></th>
+																  <th scope="col"></th>
+																  <th scope="col"></th>
+																</tr>
+															  </thead>
+															  <tbody>
+																<tr>
+																  <td><a href="{{cars.unit_rented.documents.url}}">Car Documents</a></td>
+																  <td>{{cars.unit_rented.categories}}</td>
+																  <td>{{cars.unit_rented.model_car}}</td>
+																  <td>{{cars.unit_rented.seat}} seaters</td>
+																</tr>
+																<tr>
+																  <td>{{cars.unit_rented.fuels}}</td>
+																  <td>{{cars.unit_rented.color_description}}</td>
+																  <td>{{cars.unit_rented.transmission}} transmission</td>
+																  <td>Plate: {{cars.unit_rented.plate}}</td>
+																</tr>
+																<tr>
+																  <td>Chasis: {{cars.unit_rented.chasis_number}}</td>
+																  <td>VIN: {{cars.unit_rented.vin_no}}</td>
+																  <td>{{cars.unit_rented.vehicle_type}}</td>
+																  <td></td>
+																</tr>
+															  </tbody>
+															</table>
+													  </div>
+
+													  <div class="col-sm-12">
+														<div class="table-responsive">
+															<table class="table">
+																<thead>
+																  <tr>
+																	<th scope="col">Rent Details</th>
+																	<th scope="col"></th>
+																	<th scope="col"></th>
+																	<th scope="col"></th>
+																  </tr>
+																</thead>
+																<tbody>
+																{% if cars.driver_shp is not Null %}
+																  <tr class="border border-danger">
+																	<td>Driver: <a href="{% url 'driverdetails' pk=cars.driver_shp.id %}">{{cars.driver_shp.account.fname}} {{cars.driver_shp.account.lname}}</a></td>
+																	<td>Driver rate: ₱{{ cars.driver_shp.drivers_rate|floatformat:2|intcomma }} /hr</td>
+																	<td>0{{cars.driver_shp.account.Contact}}</td>
+																	<td>0{{cars.driver_shp.phone_number}}</td>
+																  </tr>
+																  {% else %}
+																  <tr>
+																	<td>No Driver</td>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																  </tr>
+																{% endif %}
+																  <tr>
+																	<td>Total Cost ₱{{ cars.total_fare|floatformat:2|intcomma }}</td>
+																	<td>Duration: {{cars.total_hrs}}hrs</td>
+																	<td>Pick up Date:  {{cars.pick_up_unit}}</td>
+																	<td>Return Date: {{cars.return_unit}}</td>
+																  </tr>
+																  <tr>
+																	<td><h6>Status <span class="badge text-bg-secondary">{{cars.status}}</span></h6></td>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																  </tr>
+																</tbody>
+															  </table>
+														</div>
+													
+												  </div>
+												</div>
+											  </div>
+											  <div class="modal-footer">
+												<a href="{% url 'rent_vehicles_edit' unit=cars.unit_rented.id renteid=cars.id %}" class="btn btn-danger">Edit details</a>
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+											  </div>
+											</div>
+										  </div>
+									  </div>
+									{% endfor %}
+									
+	
+								</div>
+							</div>	
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

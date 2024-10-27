@@ -1,0 +1,328 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+    <style>
+        .card{
+            border:none;
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        }
+        .glass-effect {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .glass-effect::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.3); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(10px); 
+            z-index: 0;
+        }
+        
+        .card-body {
+            position: relative;
+            z-index: 1;
+        }
+        
+    </style>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<div class="card glass-effect" style="background-image: url({{shops.banner.url}});"">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                           <div class="row">
+                                                <div class="col-sm-3 d-flex justify-content-center">
+                                                    <img src="{{shops.logo.url}}" alt="" style="width:80px">
+                                                </div>
+                                                <div class="col-sm-7">
+                                                    <h3>{{shops.shop_name}}</h3>
+                                                    <h6>{{shops.email}}</h6>
+                                                    <h6>{{shops.address}}</h6>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="{% url 'mylistshop' %}" class="btn btn-primary w-100">Back</a>
+                                                </div>
+                                           </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+					<div class="row">
+						<div class="col-xl-6 col-xxl-5 d-flex">
+							<div class="w-100">
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Vehicles</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="align-middle" data-feather="truck"></i>
+														</div>
+													</div>
+												</div>
+												<h1 class="">{{count_vehicles}}</h1>
+												<div class="mb-0">
+													<a href="{% url 'vehicles' slug=shops.slug %}" class="btn btn-danger">See Vehicles</a>
+												</div>
+											</div>
+										</div>
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Registred Drivers</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="align-middle" data-feather="users"></i>
+														</div>
+													</div>
+												</div>
+												<h1 class="">{{count_approve}}</h1>
+												<div class="mb-0">
+													<a href="{% url 'mydrivers' slug=shops.slug %}" class="btn btn-danger">See drivers {% if count_not_approve > 0 %}( applying {{count_not_approve}} ){% endif %}</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-6 col-xxl-7">
+							<div class="card flex-fill w-100">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">Monthly Rent Sales</h5>
+								</div>
+								<div class="card-body py-3">
+									<div class="chart chart-sm">
+										<canvas id="chartjs-dashboard-line"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-12 col-md-12 col-xxl-5 d-flex order-3 order-xxl-2">
+							<div class="card flex-fill w-100">
+								<div class="card-body px-4">
+									<div id="map" style="height:350px;"></div>
+								</div>
+							</div>
+						</div>
+                        <div class="col-12 col-md-12 col-xxl-7 d-flex order-3 order-xxl-2">
+							<div class="card flex-fill w-100">
+								<div class="card-body px-4">
+									<h5>Rented cars</h5>
+									<div class="table-responsive">
+                                        <table id="printables" class="display" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Car Detail</th>
+                                                    <th>Plate Number</th>
+                                                    <th>Rent Hrs</th>
+													<th>Total Amount</th>
+													<th>Drivers included?</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												{% for rent in rented_cars %}
+													<tr>
+														<td>{{rent.unit_rented.categories}} {{rent.unit_rented.model_car}} </td>
+														<td>{{rent.unit_rented.plate}}</td>
+														<td>{{rent.total_hrs}} hrs</td>
+														<td>₱{{ rent.total_fare|floatformat:2|intcomma }}</td>
+														<td>{% if rent.driver_shp is Null %}No driver{% else %}Included{% endif %}</td>
+														<td>
+															<a class="btn btn-sm btn-danger" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{rent.id}}">Rent detail</a>
+														</td>
+													</tr>
+												{% endfor %}                    
+                                            </tbody>                     
+                                        </table>
+                                    </div>
+									
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					<!-- Modal -->
+					{% for rent in rented_cars  %}
+					<div class="modal fade" id="staticBackdrop{{rent.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-xl">
+						<div class="modal-content">
+							<div class="modal-header">
+							<h1 class="modal-title fs-5" id="staticBackdropLabel">Rent Details</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="table-responsive">
+											<table class="table table-hover">
+												<thead>
+												  <tr>
+													<th scope="col" colspan="2">Renter's Details</th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+												  </tr>
+												</thead>
+												<tbody>
+												  <tr>
+													<td><a href="{{rent.renter_validid.url}}" class="text-danger">Valid IDs</a></td>
+													<td><a href="{{rent.renters.avatar.url}}" class="text-danger">User Profile</a></td>
+													<td>{{rent.renters.fname}} {{rent.renters.lname}}</td>
+													<td>0{{rent.renters.Contact}}</td>
+													
+												  </tr>
+												  <tr>
+													<td><a href="mailto:{{rent.renters.email}}" class="text-danger">Email</a></td>
+													<td>{{rent.renters.Address}}</td>
+													<td></td>
+													<td></td>
+												  </tr>
+												 
+												</tbody>
+											  </table>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="table-responsive">
+											<table class="table">
+												<thead>
+												  <tr>
+													<th scope="col" colspan="2">Rent Details</th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+												  </tr>
+												</thead>
+												<tbody>
+													{% if rent.driver_shp is not Null %}
+														<tr>
+															<td>{{rent.driver_shp.account.fname}} {{rent.driver_shp.account.lname}}</td>
+															<td><a href="tel:+0{{rent.driver_shp.account.Contact}}" class="text-danger">0{{rent.driver_shp.account.Contact}}</a> </td>
+															<td><a href="tel:+0{{rent.driver_shp.phone_number}}" class="text-danger">0{{rent.driver_shp.phone_number}}</a> </td>
+															<td>₱{{ rent.driver_shp.drivers_rate|floatformat:2|intcomma }}/hr</td>
+														</tr>
+													{% else %}
+													<tr>
+														<td colspan="3">No Selected Driver</td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+													{% endif %}
+													<tr>
+														<td>{{rent.unit_rented.categories}} {{rent.unit_rented.model_car}} ,{{rent.unit_rented.seat}} seater</td>
+														<td>{{rent.unit_rented.plate}}</td>
+														<td>{{rent.unit_rented.color_description}}</td>
+														<td>₱ {{ rent.unit_rented.rent_per_hr|floatformat:2|intcomma }}/hr</td>
+													  </tr>
+												  <tr>
+													<td>Pickup : {{rent.pick_up_unit}}</td>
+													<td>Return : {{rent.return_unit}}</td>
+													<td>Rent hrs: {{rent.total_hrs}}hrs</td>
+													<td>Total Payment: ₱{{ rent.total_fare|floatformat:2|intcomma }}</td>
+												  </tr>
+												  
+												</tbody>
+											  </table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+							<a href="" class="btn btn-danger">Approved rent request</a>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							</div>
+						</div>
+						</div>
+					</div>
+					{% endfor %}
+					
+
+					
+
+				</div>
+			</main>
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <script>
+                // Initialize the map and set its view
+                var map = L.map('map').setView([{{shops.latitude}},{{shops.longitude}}], 16); // Default: Manila coordinates
+                
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
+            
+                var marker = L.marker([{{shops.latitude}},{{shops.longitude}}], {draggable: false}).addTo(map);
+                
+            
+                
+               
+            </script>
+			{% include 'accounts/footer.html' %}

@@ -1,0 +1,89 @@
+{% extends 'public/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card{
+        border:none;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    }
+</style>
+   
+
+    <!-- Service Start -->
+    <div class="container-xxl service py-5">
+        <div class="container">
+            <div class="text-start wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-primary text-uppercase">Our Shops</h6>
+                <h1 class="mb-5">Explore Our Registered Shops</h1>
+            </div>
+            <div class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img src="https://wieck-honda-production.s3.amazonaws.com/photos/d33379bfd9aa208d0232638a05dae7da8305158b/preview-928x522.jpg" alt="" class="img-fluid">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="d-flex">
+                                        <h3>Microhard Corp.</h3>
+                                    </div>
+                                    <div class="d-flex">
+                                        <i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i>
+                                    </div>
+                                   <a href="{% url 'shop_details' %}" class="btn btn-sm btn-primary">View Shop</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+               <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img src="https://wieck-honda-production.s3.amazonaws.com/photos/d33379bfd9aa208d0232638a05dae7da8305158b/preview-928x522.jpg" alt="" class="img-fluid">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="d-flex">
+                                        <h3>Microhard Corp.</h3>
+                                    </div>
+                                    <div class="d-flex">
+                                        <i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i>
+                                    </div>
+                                   <a href="{% url 'shop_details' %}" class="btn btn-sm btn-primary">View Shop</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+               <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img src="https://wieck-honda-production.s3.amazonaws.com/photos/d33379bfd9aa208d0232638a05dae7da8305158b/preview-928x522.jpg" alt="" class="img-fluid">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="d-flex">
+                                        <h3>Microhard Corp.</h3>
+                                    </div>
+                                    <div class="d-flex">
+                                        <i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i>
+                                    </div>
+                                   <a href="{% url 'shop_details' %}" class="btn btn-sm btn-primary">View Shop</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+               
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    
+    {% endblock content %}

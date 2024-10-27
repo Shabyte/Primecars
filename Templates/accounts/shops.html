@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Registed Shops</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="printables" class="display" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Shop name</th>
+                                                    <th>Owner</th>
+                                                    <th>Address</th>
+                                                    <th>BIR Tin</th>
+                                                    <th>Created</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												{% for shops in list_shops %}
+													<tr>
+														<td>{{shops.shop_name}}</td>
+														<td>{{shops.owner.fname}} {{shops.owner.lname}}</td>
+														<td>{{shops.address}}</td>
+														<td>{{shops.tin}}</td>
+														<td>{{shops.date_created}} </td>
+														<td>
+															{% if shops.status == 'lock' %}
+																<a  class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#shops{{shops.id}}">{{shops.status}}</a>
+																{% else %}
+																<a href="" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#shops{{shops.id}}">{{shops.status}}</a>
+															{% endif %}
+															
+														</td>
+													</tr>
+												{% endfor %}
+                                                
+                                                                                
+                                            </tbody>
+                                                                            
+                                        </table>
+                                    </div>
+								</div>
+								{% for shops in list_shops %}
+								<div class="modal fade" id="shops{{shops.id}}" tabindex="-1" aria-labelledby="shopsLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg">
+									  <div class="modal-content">
+										<div class="modal-header">
+										  <h1 class="modal-title fs-5" id="shopsLabel">Shop Detail</h1>
+										  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+										  <div class="row">
+											<div class="col-sm-6">
+												<p>Shop Details</p>
+												<div class="row">
+													<div class="col-sm-2">
+														<img src="{{shops.logo.url}}" alt="" class="img-fluid">
+													</div>
+													<div class="col-sm-10">
+														<a href="{{shops.validids.url}}" download>Shop Documents</a>
+														<input type="text" class="form-control" value="{{shops.shop_name}}">
+														<input type="text" class="form-control" value="{{shops.address}}">
+														<input type="text" class="form-control" value="Tin : {{shops.tin}}">
+														<input type="text" class="form-control" value="Brn : {{shops.brn}}">
+														<input type="text" class="form-control" value="{{shops.email}}">
+														<input type="text" class="form-control" value="{{shops.contact}}">
+														
+														
+														</div>
+												</div>
+											</div>
+											<div class="col-sm-6 border-start">
+												<p>Shop owner</p>
+												<div class="row">
+													<div class="col-sm-2">
+														<img src="{{shops.owner.avatar.url}}" alt="" class="img-fluid">
+													</div>
+													<div class="col-sm-10">
+														<input type="text" class="form-control" value="{{shops.owner.fname}} {{shops.owner.lname}}">
+														<input type="text" class="form-control" value="{{shops.owner.email}}">
+														<input type="text" class="form-control" value="{{shops.owner.Contact}}">
+														<input type="text" class="form-control" value="{{shops.owner.Address}}">
+													</div>
+												</div>
+											</div>
+										  </div>
+										</div>
+										<div class="modal-footer">
+										  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+										  <a href="{% url 'unlock_shops' pk=shops.id %}" class="btn btn-{% if shops.status == 'lock' %}secondary{% else %}danger{% endif %}">{{shops.status}}</a>
+										</div>
+									  </div>
+									</div>
+								  </div>
+								{% endfor %}
+								
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}
